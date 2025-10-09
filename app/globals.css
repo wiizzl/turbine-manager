@@ -1,9 +1,26 @@
 @import "tailwindcss";
 
+@property --value {
+    syntax: "<integer>";
+    initial-value: 0;
+    inherits: false;
+}
+
+@layer utilities {
+    .animated-value {
+        transition: --value 1s;
+        counter-set: value var(--value);
+    }
+
+    .animated-value::before {
+        content: counter(value);
+    }
+}
+
 @layer base {
-  /* https://tailwindcss.com/docs/upgrade-guide#buttons-use-the-default-cursor */
-  button:not(:disabled),
-  [role="button"]:not(:disabled) {
-    cursor: pointer;
-  }
+    /* https://tailwindcss.com/docs/upgrade-guide#buttons-use-the-default-cursor */
+    button:not(:disabled),
+    [role="button"]:not(:disabled) {
+        cursor: pointer;
+    }
 }

@@ -38,7 +38,7 @@ export default function HomePage() {
         } else if (state === TurbineState.STARTING) {
           setState(TurbineState.RUNNING);
         }
-      }, 3000);
+      }, 1000);
 
       return () => clearTimeout(timeout);
     }
@@ -63,12 +63,17 @@ export default function HomePage() {
           : "Start Turbine";
 
   const infos = [
-    { label: "Power Output", value: `${powerOutput()} kW` },
-    { label: "Wind Speed", value: "12.5 m/s" },
-    { label: "Efficiency", value: "87%" },
-    { label: "Yaw Direction", value: `${yaw}°` },
-    { label: "Blade Pitch", value: `${pitch}°` },
-    { label: "Temperature", value: "42°C" },
+    {
+      label: "Power Output",
+      value: powerOutput(),
+      unit: "kW",
+      animation: true,
+    },
+    { label: "Wind Speed", value: 12.5, unit: "m/s", animation: false },
+    { label: "Efficiency", value: 87, unit: "%", animation: false },
+    { label: "Yaw Direction", value: yaw, unit: "°", animation: true },
+    { label: "Blade Pitch", value: pitch, unit: "°", animation: true },
+    { label: "Temperature", value: 42, unit: "°C", animation: false },
   ];
 
   const sliders = [
@@ -78,13 +83,22 @@ export default function HomePage() {
 
   return (
     <main className="bg-[#f2f4f7] min-h-screen flex items-center justify-center">
-      <div className="max-w-[500px] w-full bg-white rounded-xl shadow space-y-8 p-8 scale-95">
+      <div className="max-w-[500px] w-full bg-white rounded-xl shadow space-y-8 p-8">
         <div className="flex justify-between">
-          <Image src="/turbine.png" alt="Turbine" width={38} height={38} className="ml-5" draggable={false} />
+          <Image
+            src="/turbine.png"
+            alt="Turbine"
+            width={38}
+            height={38}
+            className="ml-5"
+            draggable={false}
+          />
           <div className="flex flex-col justify-center items-end">
             <p className="font-bold text-lg">Wind Turbine #607</p>
             <div className="flex items-center gap-1.5">
-              <div className={`p-1 rounded-full animate-pulse ${statusColors[state]}`} />
+              <div
+                className={`p-1 rounded-full animate-pulse ${statusColors[state]}`}
+              />
               <p className="text-sm font-medium">{state}</p>
             </div>
           </div>
@@ -92,8 +106,17 @@ export default function HomePage() {
 
         <div className="grid grid-cols-2 gap-4">
           {infos.map((item, index) => (
-            <div className="p-4 bg-[#f2f4f7] rounded-md border border-gray-200" key={index}>
-              <span className="font-bold text-lg">{item.value}</span>
+            <div
+              className="p-4 bg-[#f2f4f7] rounded-md border border-gray-200"
+              key={index}
+            >
+              <span
+                className={`font-bold text-lg ${item.animation ? "animated-value" : ""}`}
+                style={{ "--value": item.value } as React.CSSProperties}
+              >
+                {!item.animation && item.value}
+                {item.unit}
+              </span>
               <p className="text-xs font-medium">{item.label}</p>
             </div>
           ))}
@@ -101,7 +124,9 @@ export default function HomePage() {
 
         <button
           type="button"
-          disabled={state === TurbineState.STARTING || state === TurbineState.SLOWING}
+          disabled={
+            state === TurbineState.STARTING || state === TurbineState.SLOWING
+          }
           className="font-semibold text-white bg-[#1c2838] w-full rounded-lg p-3 disabled:opacity-60"
           onClick={handleClick}
         >
@@ -110,7 +135,10 @@ export default function HomePage() {
 
         <div className={`flex flex-col gap-4 ${disabled ? "opacity-50" : ""}`}>
           {sliders.map((item, index) => (
-            <div className="bg-[#f2f4f7] p-4 rounded-md w-full border border-gray-200 space-y-1" key={index}>
+            <div
+              className="bg-[#f2f4f7] p-4 rounded-md w-full border border-gray-200 space-y-1"
+              key={index}
+            >
               <p className="text-sm font-medium">{item.label}</p>
               <div className="flex w-full items-center gap-x-2">
                 <p className="text-sm">{item.min}°</p>
@@ -121,7 +149,7 @@ export default function HomePage() {
                   disabled={disabled}
                   value={item.value}
                   onChange={(e) => item.setValue(Number(e.target.value))}
-                  className="w-full accent-gray-400"
+                  className="w-full accent-[#1c2838]"
                 />
                 <p className="text-sm">{item.max}°</p>
               </div>
